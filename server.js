@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-//const notes = require("./db/db.json");
+const notes = require("./db/db.json");
 
 // set up server
 const app = express();
@@ -24,6 +24,11 @@ app.get("/", (req, res) => {
 // Get Route for notes.html
 app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "public/notes.html"));
+});
+
+// Get Route for api/notes
+app.get("/api/notes", (req, res) => {
+  res.json(notes);
 });
 
 app.listen(PORT, () =>
