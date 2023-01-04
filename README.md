@@ -12,6 +12,10 @@ This app is used to write, save and delete notes. It used Express.js to view,cre
 - Node.js is required
 - npm install to install required npm packages
 
+## Demo
+
+![Alt text](image/video.gif)
+
 ## License
 
 This project is license under MIT.
