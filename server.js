@@ -1,8 +1,7 @@
-const { notEqual } = require("assert");
-const { json } = require("express");
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const uuid = require("uuid");
 
 // set up server
 const app = express();
@@ -43,7 +42,7 @@ app.post("/api/notes", function (req, res) {
     let readNotes = JSON.parse(data);
 
     let newNote = req.body;
-    newNote.id = readNotes.length;
+    newNote.id = uuid.v4();
     readNotes.push(newNote);
 
     fs.writeFile("db/db.json", JSON.stringify(readNotes), "utf8", (err) => {
@@ -61,11 +60,11 @@ app.delete("/api/notes/:id", (req, res) => {
     if (err) throw err;
     let notes = JSON.parse(data);
     // let newData;
-    const found = notes.some((note) => note.id === parseInt(req.params.id));
+    const found = notes.some((note) => note.id === req.params.id);
     console.log(found);
     if (found) {
       //   return (notes = res.json(
-      notes = notes.filter((note) => note.id !== parseInt(req.params.id));
+      notes = notes.filter((note) => note.id !== req.params.id);
     } else {
       console.log("id not found");
     }
