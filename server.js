@@ -1,7 +1,8 @@
+const { json } = require("express");
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const notes = require("./db/db.json");
+const db = require("./db/db.json");
 
 // set up server
 const app = express();
@@ -28,7 +29,30 @@ app.get("/notes", (req, res) => {
 
 // Get Route for api/notes
 app.get("/api/notes", (req, res) => {
-  res.json(notes);
+  fs.readFile("db/db.json", "utf-8", (err, data) => {
+    if (err) throw err;
+    res.json(JSON.parse(data));
+  });
+});
+
+// Post Route for api/notes
+app.post("/api/notes", function (req, res) {
+  fs.readFile("db/db.json", "utf-8", (err, data) => {
+    if (err) throw err;
+
+    let readNotes = JSON.parse(data);
+
+    let newNote = req.body;
+    newNote.id = readNotes.length.toString();
+    readNotes.push(newNote);
+
+    fs.writeFile("db/db.json", JSON.stringify(readNotes), "utf8", (err) => {
+      if (err) throw err;
+      console.log("successfully added!");
+    });
+
+    res.json(readNotes);
+  });
 });
 
 app.listen(PORT, () =>
