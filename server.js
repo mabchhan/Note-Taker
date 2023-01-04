@@ -1,8 +1,8 @@
+const { notEqual } = require("assert");
 const { json } = require("express");
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const db = require("./db/db.json");
 
 // set up server
 const app = express();
@@ -43,7 +43,7 @@ app.post("/api/notes", function (req, res) {
     let readNotes = JSON.parse(data);
 
     let newNote = req.body;
-    newNote.id = readNotes.length.toString();
+    newNote.id = readNotes.length;
     readNotes.push(newNote);
 
     fs.writeFile("db/db.json", JSON.stringify(readNotes), "utf8", (err) => {
@@ -52,6 +52,30 @@ app.post("/api/notes", function (req, res) {
     });
 
     res.json(readNotes);
+  });
+});
+
+// Delete Route for api/notes
+app.delete("/api/notes/:id", (req, res) => {
+  fs.readFile("db/db.json", (err, data) => {
+    if (err) throw err;
+    let notes = JSON.parse(data);
+    // let newData;
+    const found = notes.some((note) => note.id === parseInt(req.params.id));
+    console.log(found);
+    if (found) {
+      //   return (notes = res.json(
+      notes = notes.filter((note) => note.id !== parseInt(req.params.id));
+    } else {
+      console.log("id not found");
+    }
+
+    //console.log(notes);
+    fs.writeFile("db/db.json", JSON.stringify(notes), "utf8", (err) => {
+      if (err) throw err;
+      console.log("Success!");
+    });
+    res.json(notes);
   });
 });
 
